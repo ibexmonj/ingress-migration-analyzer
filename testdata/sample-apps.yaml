@@ -1,0 +1,222 @@
+# Sample applications for testing the migration analyzer
+# Using simple nginx containers for reliability in kind
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: echo-html
+  namespace: default
+data:
+  index.html: |
+    <html><body><h1>Hello from echo app!</h1></body></html>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-app
+  namespace: default
+  labels:
+    app: echo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo-app
+  template:
+    metadata:
+      labels:
+        app: echo-app
+    spec:
+      containers:
+      - name: echo
+        image: nginx:1.21-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html
+        configMap:
+          name: echo-html
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-service
+  namespace: default
+spec:
+  selector:
+    app: echo-app
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-html
+  namespace: production
+data:
+  index.html: |
+    <html><body><h1>API v1 Response</h1><p>This is the production API service.</p></body></html>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-app
+  namespace: production
+  labels:
+    app: api-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-app
+  template:
+    metadata:
+      labels:
+        app: api-app
+    spec:
+      containers:
+      - name: api
+        image: nginx:1.21-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html
+        configMap:
+          name: api-html
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  namespace: production
+spec:
+  selector:
+    app: api-app
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: admin-html
+  namespace: production
+data:
+  index.html: |
+    <html><body><h1>Admin Dashboard</h1><p>Restricted admin area.</p></body></html>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-app
+  namespace: production
+  labels:
+    app: admin-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-app
+  template:
+    metadata:
+      labels:
+        app: admin-app
+    spec:
+      containers:
+      - name: admin
+        image: nginx:1.21-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html
+        configMap:
+          name: admin-html
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-service
+  namespace: production
+spec:
+  selector:
+    app: admin-app
+  ports:
+  - port: 8080
+    targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: legacy-html
+  namespace: staging
+data:
+  index.html: |
+    <html><body><h1>Legacy Application</h1><p>This is the legacy app in staging.</p></body></html>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: legacy-app
+  namespace: staging
+  labels:
+    app: legacy-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: legacy-app
+  template:
+    metadata:
+      labels:
+        app: legacy-app
+    spec:
+      containers:
+      - name: legacy
+        image: nginx:1.21-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html
+        configMap:
+          name: legacy-html
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-service
+  namespace: staging
+spec:
+  selector:
+    app: legacy-app
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP

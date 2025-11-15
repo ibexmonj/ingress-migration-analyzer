@@ -1,0 +1,36 @@
+# High-risk ingress with server snippets for testing
+# This may be blocked by ingress-nginx security settings
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: high-risk-admin
+  namespace: production
+  annotations:
+    # HIGH RISK: Server and configuration snippets
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location ~ /admin/health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+      }
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Admin-Server: $server_name";
+      if ($request_method = DELETE) {
+        return 405;
+      }
+    # Mixed with other types
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: admin.example.com
+    http:
+      paths:
+      - path: /admin
+        pathType: Prefix
+        backend:
+          service:
+            name: admin-service
+            port:
+              number: 8080

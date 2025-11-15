@@ -1,0 +1,110 @@
+# Sample Ingress resources for testing the migration analyzer
+# This file contains examples of different risk levels
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-rewrite
+  namespace: default
+  annotations:
+    # Auto-migratable annotation
+    nginx.ingress.kubernetes.io/rewrite-target: /api/$1
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: api.example.com
+    http:
+      paths:
+      - path: /v1/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: api-service
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: complex-auth
+  namespace: production
+  annotations:
+    # Manual review annotations
+    nginx.ingress.kubernetes.io/auth-url: https://auth.example.com/oauth2/auth
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+    # Also has auto-migratable
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: app.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-service
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: high-risk-snippets
+  namespace: production
+  annotations:
+    # High risk annotations
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location ~ /admin {
+        deny all;
+        return 403;
+      }
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Custom-Header: $host";
+      if ($request_method = POST) {
+        return 405;
+      }
+    # Mixed with other types
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: admin.example.com
+    http:
+      paths:
+      - path: /admin
+        pathType: Prefix
+        backend:
+          service:
+            name: admin-service
+            port:
+              number: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: legacy-annotation
+  namespace: default
+  annotations:
+    # Legacy annotation style (deprecated)
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: legacy.example.com
+    http:
+      paths:
+      - path: /old-app
+        pathType: Prefix
+        backend:
+          service:
+            name: legacy-service
+            port:
+              number: 80
