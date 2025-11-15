@@ -1,8 +1,8 @@
-# Ingress-NGINX Migration Analyzer
+th# Ingress-NGINX Migration Analyzer
 
 > Analyze your ingress-nginx usage and plan your migration before the March 2026 EOL
 
-[![Go Version](https://img.shields.io/badge/go-1.21+-blue.svg)](https://golang.org/)
+[![Go Version](https://img.shields.io/badge/go-1.25+-blue.svg)](https://golang.org/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/badge/release-v0.1.0-green.svg)](https://github.com/user/ingress-migration-analyzer/releases)
 
@@ -22,7 +22,8 @@ The ingress-nginx controller will reach end-of-life in March 2026, requiring all
 - ⚡ **Fast Analysis**: Complete cluster scan in seconds
 - 🎯 **Namespace Breakdown**: Per-namespace statistics and analysis
 - 🔧 **Flexible Configuration**: Support for custom kubeconfig and contexts
-- 📋 **Annotation Coverage**: 15+ known nginx annotations classified
+- 📋 **Annotation Coverage**: 15+ known nginx annotations classified with source documentation
+- 📦 **Comprehensive Inventory**: Detailed annotation usage analysis and migration planning
 
 ## Installation
 
@@ -56,6 +57,9 @@ analyzer scan
 # Scan specific namespace
 analyzer scan --namespace production
 
+# Generate comprehensive annotation inventory
+analyzer inventory --format markdown --detailed
+
 # Generate JSON report
 analyzer scan --format json --output ./migration-reports/
 
@@ -84,7 +88,10 @@ The tool contains **expert-curated rules** based on:
 Each annotation includes:
 - **Risk Level**: AUTO/MANUAL/HIGH_RISK classification
 - **Migration Notes**: Specific guidance for that annotation
+- **Source Documentation**: Links to official Gateway API and NGINX docs
 - **Alternative Solutions**: Gateway API filters, service mesh options, or application-level changes
+
+> **🔗 All migration recommendations are backed by source documentation** - Every annotation analysis includes links to official Gateway API specs and NGINX documentation to ensure credibility and provide engineers with authoritative references.
 
 ### Adding New Annotations
 
