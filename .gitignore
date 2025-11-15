@@ -32,3 +32,4 @@ reports/
 # Build artifacts
 bin/
 dist/
+analyzer
