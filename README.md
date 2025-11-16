@@ -37,7 +37,7 @@ sudo mv analyzer /usr/local/bin/
 
 ### Build from Source
 ```bash
-git clone https://github.com/user/ingress-migration-analyzer.git
+git clone https://github.com/ibexmonj/ingress-migration-analyzer.git
 cd ingress-migration-analyzer
 make build
 ./bin/analyzer --version
@@ -45,7 +45,7 @@ make build
 
 ### Go Install
 ```bash
-go install github.com/user/ingress-migration-analyzer/cmd/analyzer@latest
+go install github.com/ibexmonj/ingress-migration-analyzer/cmd/analyzer@latest
 ```
 
 ## Quick Start
@@ -169,7 +169,7 @@ Generated reports include:
 
 ```bash
 # Clone and setup
-git clone https://github.com/user/ingress-migration-analyzer.git
+git clone https://github.com/ibexmonj/ingress-migration-analyzer.git
 cd ingress-migration-analyzer
 make dev-setup
 
@@ -233,6 +233,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## Support
 
-- 📋 [Issues](https://github.com/user/ingress-migration-analyzer/issues) - Report bugs or request features
+- 📋 [Issues](https://github.com/ibexmonj/ingress-migration-analyzer/issues) - Report bugs or request features
 - 📖 [Documentation](./examples/) - Usage examples and guides
-- 💬 [Discussions](https://github.com/user/ingress-migration-analyzer/discussions) - Community support
+- 💬 [Discussions](https://github.com/ibexmonj/ingress-migration-analyzer/discussions) - Community support
