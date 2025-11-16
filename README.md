@@ -4,7 +4,7 @@ n the# Ingress-NGINX Migration Analyzer
 
 [![Go Version](https://img.shields.io/badge/go-1.25+-blue.svg)](https://golang.org/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v0.1.0-green.svg)](https://github.com/user/ingress-migration-analyzer/releases)
+[![Release](https://img.shields.io/badge/release-v0.1.1-green.svg)](https://github.com/ibexmonj/ingress-migration-analyzer/releases)
 
 ## Overview
 
@@ -29,10 +29,16 @@ The ingress-nginx controller will reach end-of-life in March 2026, requiring all
 
 ### Binary Release
 ```bash
-# Download latest release from GitHub
-curl -L https://github.com/user/ingress-migration-analyzer/releases/latest/download/analyzer-linux-amd64 -o analyzer
+# Download v0.1.1 release from GitHub (Linux AMD64)
+curl -L https://github.com/ibexmonj/ingress-migration-analyzer/releases/download/v0.1.1/analyzer-linux-amd64 -o analyzer
 chmod +x analyzer
 sudo mv analyzer /usr/local/bin/
+
+# For other platforms, replace the binary name:
+# macOS AMD64: analyzer-darwin-amd64
+# macOS ARM64: analyzer-darwin-arm64  
+# Linux ARM64: analyzer-linux-arm64
+# Windows: analyzer-windows-amd64.exe
 ```
 
 ### Build from Source
@@ -226,10 +232,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - [x] Markdown and JSON report generation
 - [x] Risk-based annotation classification
 - [ ] Gateway API specific migration suggestions
-- [ ] Integration with CI/CD pipelines
-- [ ] Migration cost estimation
-- [ ] Support for additional ingress controllers
-- [ ] Web dashboard interface
+
 
 ## Support
 
