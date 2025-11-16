@@ -1,4 +1,4 @@
-th# Ingress-NGINX Migration Analyzer
+n the# Ingress-NGINX Migration Analyzer
 
 > Analyze your ingress-nginx usage and plan your migration before the March 2026 EOL
 
