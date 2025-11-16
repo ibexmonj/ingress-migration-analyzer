@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.0'
+
+      - name: Run tests
+        run: go test -v ./...
+
+      - name: Build binaries
+        run: |
+          # Linux AMD64
+          GOOS=linux GOARCH=amd64 go build -o dist/analyzer-linux-amd64 ./cmd/analyzer
+          
+          # Linux ARM64
+          GOOS=linux GOARCH=arm64 go build -o dist/analyzer-linux-arm64 ./cmd/analyzer
+          
+          # macOS AMD64
+          GOOS=darwin GOARCH=amd64 go build -o dist/analyzer-darwin-amd64 ./cmd/analyzer
+          
+          # macOS ARM64 (Apple Silicon)
+          GOOS=darwin GOARCH=arm64 go build -o dist/analyzer-darwin-arm64 ./cmd/analyzer
+          
+          # Windows AMD64
+          GOOS=windows GOARCH=amd64 go build -o dist/analyzer-windows-amd64.exe ./cmd/analyzer
+
+      - name: Generate checksums
+        run: |
+          cd dist
+          sha256sum * > checksums.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/analyzer-linux-amd64
+            dist/analyzer-linux-arm64
+            dist/analyzer-darwin-amd64
+            dist/analyzer-darwin-arm64
+            dist/analyzer-windows-amd64.exe
+            dist/checksums.txt
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
